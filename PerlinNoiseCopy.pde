@@ -17,8 +17,8 @@ void setup() {
 void draw () {
   
   flying -= 0.01; // how fast the camera is moving along y-axis
-  int zmin = -50;
-  int zmax = 50;
+  int zmin = 0;
+  int zmax = 100;
   
   float yoff = flying;
   for (int y = 0; y < rows; y++) {
@@ -47,40 +47,41 @@ void draw () {
        vertex(x*scl, (y+1)*scl, terrain[x][y+1]);
        
        float h;
-       float g;
-       float b;
+       float s = 100;
+       float b = 100;
        
        
        // TURN THE COLORS TO HSL IN ORDER TO USE HUE https://stackoverflow.com/questions/12875486/what-is-the-algorithm-to-create-colors-for-a-heatmap
        
-       colorMode(HSB, 100);
+       colorMode(HSB, 360, 100, 100);
        
-       if (terrain[x][y] <= zmax && terrain[x][y] > zmax/2) {  // RED
-          h = terrain[x][y] * 255;
+       if (terrain[x][y] <= zmax && terrain[x][y] > 3*zmax/4) {  // RED
+          h = (1 - terrain[x][y]/100) * 360;
           //g = 0;      g and b are commented to allow for HSB value application
           //b = 0;
-          fill(h, 100, 100); // s and b are 100 for HSB values
+          fill(h, s, b); // s and b are 100 for HSB values
         }
-       else if (terrain[x][y] <= zmax/2 && terrain[x][y] > 0.0) { // GREEN
-          h = terrain[x][y] * 255;
+       else if (terrain[x][y] <= 3*zmax/2 && terrain[x][y] > zmax/2) { // GREEN
+          h = (1 - terrain[x][y]/100) * 360;
           //g = terrain[x][y] * 255;
           //b = 0;
-          fill(h, 100, 100);  
+          fill(h, s, b);  
+          System.out.println(h);
         }
-       else if (terrain[x][y] <= 0.0 && terrain[x][y] > zmin/2) { // BLUE
-          h = terrain[x][y];
+       else if (terrain[x][y] <= zmax/2 && terrain[x][y] > zmax/4) { // BLUE
+          h = (1 - terrain[x][y]/100) * 360;
           //g = 0;
           //b = -terrain[x][y] * 255;
-          fill(h, 100, 100); 
+          fill(h, s, b); 
        }
         
-       else if (terrain[x][y] <= zmin/2) { // TURQUOISE
-          h = terrain[x][y];
+       else if (terrain[x][y] <= zmax/4) { // TURQUOISE
+          h = (1 - terrain[x][y]/100) * 360;
           //g = -terrain[x][y] * 255;
           //b = -terrain[x][y] * 255;
-          fill(h, 100, 100); 
+          fill(h, s, b);
        }
-       
+       //System.out.println(terrain[x][y]);
     }
     
     endShape();
