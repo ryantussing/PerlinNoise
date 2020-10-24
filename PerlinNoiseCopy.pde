@@ -3,7 +3,8 @@ int scl = 20;
 int w = 1200; 
 int h = 900;
 
-float flying = 0;
+float flyingValue;
+float flying;
 
 float[][] terrain;
 
@@ -14,9 +15,15 @@ void setup() {
   terrain = new float[cols][rows];
 }
 
+void keyPressed() {
+  if (keyCode == UP) {
+    flying -= 0.10; // how fast the camera is moving along y-axis
+    System.out.println("yes");
+  }
+}
+
 void draw () {
   
-  flying -= 0.01; // how fast the camera is moving along y-axis
   int zmin = 0;
   int zmax = 100;
   
@@ -56,27 +63,27 @@ void draw () {
        colorMode(HSB, 360, 100, 100);
        
        if (terrain[x][y] <= zmax && terrain[x][y] > 3*zmax/4) {  // RED
-          h = (1 - terrain[x][y]/100) * 360;
+          //h = (1 - terrain[x][y]/100) * 360;
+          h = ((1 - terrain[x][y]/100) * 360) - 90;
           //g = 0;      g and b are commented to allow for HSB value application
           //b = 0;
           fill(h, s, b); // s and b are 100 for HSB values
         }
        else if (terrain[x][y] <= 3*zmax/2 && terrain[x][y] > zmax/2) { // GREEN
-          h = (1 - terrain[x][y]/100) * 360;
+          h = ((1 - terrain[x][y]/100) * 360) - 90;
           //g = terrain[x][y] * 255;
           //b = 0;
           fill(h, s, b);  
-          System.out.println(h);
         }
        else if (terrain[x][y] <= zmax/2 && terrain[x][y] > zmax/4) { // BLUE
-          h = (1 - terrain[x][y]/100) * 360;
+          h = ((1 - terrain[x][y]/100) * 360) - 90;
           //g = 0;
           //b = -terrain[x][y] * 255;
           fill(h, s, b); 
        }
         
        else if (terrain[x][y] <= zmax/4) { // TURQUOISE
-          h = (1 - terrain[x][y]/100) * 360;
+          h = ((1 - terrain[x][y]/100) * 360) - 90;
           //g = -terrain[x][y] * 255;
           //b = -terrain[x][y] * 255;
           fill(h, s, b);
