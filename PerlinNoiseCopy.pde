@@ -2,34 +2,47 @@ int cols, rows;
 int scl = 20;
 int w = 1200; 
 int h = 900;
+static float z;
+static float z1;
 static int colIndex;
 static int rowIndex;
 
 float flyingValue;
-float flying;
+float flying;  
+static int zmin = 0;
+static int zmax = 100;
 
 float[][] terrain;
 
 void setup() {
-  size(600, 600, P3D);
+  size(1500, 1500, P3D);
   cols = w / scl;
   rows = h / scl;
   terrain = new float[cols][rows];
+  
+  float max = findHighestValue(terrain);
+  float min = findLowestValue(terrain);
+  float rowIndexMax = findRowHighestValue(terrain);
+  float colIndexMax = findColHighestValue(terrain);
+  float rowIndexMin = findRowLowestValue(terrain);
+  float colIndexMin = findColLowestValue(terrain);
+  //float range = max - min;
+  //float colorScale = range/(cols*rows);
+  System.out.println(colIndexMax + 1 + " col max");
+  System.out.println(rowIndexMax + 1 + " row max");
+  System.out.println(colIndexMin + 1 + " col min");
+  System.out.println(rowIndexMin + 1 + " row min");
+  
 }
 
 void keyPressed() {
   if (keyCode == UP) {
     flying -= 0.10; // how fast the camera is moving along y-axis
-    System.out.println("yes");
   }
   
 }
 
 void draw () {
-  
-  int zmin = 0;
-  int zmax = 100;
-  
   
   float yoff = flying;
   
@@ -51,18 +64,10 @@ void draw () {
   rotateX(PI/3);
   translate(-w/2, -h/2);
   
-       float max = findHighestValue(terrain);
-       float min = findLowestValue(terrain);
-       float rowIndexMax = findRowHighestValue(terrain);
-       float colIndexMax = findColHighestValue(terrain);
-       float rowIndexMin = findRowLowestValue(terrain);
-       float colIndexMin = findColLowestValue(terrain);
-       float range = max - min;
-       float colorScale = range/(cols*rows);
-       System.out.println(colIndexMax + " col max");
-       System.out.println(rowIndexMax + " row max");
-       System.out.println(colIndexMin + " col min");
-       System.out.println(rowIndexMin + " row min");
+  colorMode(HSB, 360, 100, 100);
+       float h;
+       float s = 100;
+       float b = 100;
   
   for (int y = 0; y < rows - 1; y++) {
     
@@ -70,43 +75,30 @@ void draw () {
     
     for (int x = 0; x < cols; x++) {
       
-       vertex(x*scl, y*scl, terrain[x][y]);
-       vertex(x*scl, (y+1)*scl, terrain[x][y+1]);
+       z = terrain[x][y];
+       System.out.println(z);
+       z1 = terrain[x][y+1];
+       vertex(x*scl, y*scl, z);
+       vertex(x*scl, (y+1)*scl, z1);
        
-       colorMode(HSB, 360, 100, 100);
-       float h;
-       float s = 100;
-       float b = 100;
-       
-       // TURN THE COLORS TO HSL IN ORDER TO USE HUE https://stackoverflow.com/questions/12875486/what-is-the-algorithm-to-create-colors-for-a-heatmap
-       
-       //float max = findHighestValue(terrain);
-       //float min = findLowestValue(terrain);
-       
-       //float range = max - min;
-       //float colorScale = range/(cols*rows);
-       //System.out.println(colorScale);
-       
-       h = ((1 - colorScale) * 360) - 90;
-       //h = ((1 - terrain[x][y]/100) * 360) - 90;
+       //h = ((1 - colorScale) * 360) - 90;
+       h = ((1 - terrain[x][y]/100) * 360) - 90;
        //h = (1 - terrain[x][y]/360) * 360;
        fill(h, s, b);
        
-       
-       
-    }
+    } // end of inner for loop
     
     endShape();
   
-  }
+  } // end of outer for loop
   
-}
+} // end of draw
 
 public static float findHighestValue(float[][] terrain) {
-    float currentHighestValue = Float.MIN_VALUE;
+    float currentHighestValue = zmin;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value > currentHighestValue) {
                 currentHighestValue = value;
             }
@@ -115,10 +107,10 @@ public static float findHighestValue(float[][] terrain) {
     return currentHighestValue; 
 }
 public static float findRowHighestValue(float[][] terrain) {
-    float currentHighestValue = Float.MIN_VALUE;
+    float currentHighestValue = zmin;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value > currentHighestValue) {
                 rowIndex = row;
             }
@@ -127,10 +119,10 @@ public static float findRowHighestValue(float[][] terrain) {
     return rowIndex; 
 }
 public static float findColHighestValue(float[][] terrain) {
-    float currentHighestValue = Float.MIN_VALUE;
+    float currentHighestValue = zmin;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value > currentHighestValue) {
                 colIndex = col;
             }
@@ -140,26 +132,22 @@ public static float findColHighestValue(float[][] terrain) {
 }
 
 public static float findLowestValue(float[][] terrain) {
-    float currentLowestValue = Float.MAX_VALUE;
+    float currentLowestValue = zmax;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value < currentLowestValue) {
                 currentLowestValue = value;
-                //int colIndex = col;
-                //int rowIndex = row;
-                //System.out.println(colIndex + "column");
-                //System.out.println(rowIndex + "row");
             }
         }
     }
     return currentLowestValue;
 }
 public static float findRowLowestValue(float[][] terrain) {
-    float currentLowestValue = Float.MAX_VALUE;
+    float currentLowestValue = zmax;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value < currentLowestValue) {
                 rowIndex = row;
             }
@@ -168,10 +156,10 @@ public static float findRowLowestValue(float[][] terrain) {
     return rowIndex; 
 }
 public static float findColLowestValue(float[][] terrain) {
-    float currentLowestValue = Float.MAX_VALUE;
+    float currentLowestValue = zmax;
     for (int row = 0; row < terrain.length; row++) {
         for (int col = 0; col < terrain[row].length; col++) {
-            float value = terrain[row][col];
+            float value = z;
             if (value < currentLowestValue) {
                 colIndex = col;
             }
