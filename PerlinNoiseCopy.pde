@@ -1,5 +1,5 @@
 int cols, rows;
-int scl = 20;
+int scl = 10;
 int w = 1200; 
 int h = 900;
 static float z;
@@ -28,10 +28,10 @@ void setup() {
   float colIndexMin = findColLowestValue(terrain);
   //float range = max - min;
   //float colorScale = range/(cols*rows);
-  System.out.println(colIndexMax + 1 + " col max");
-  System.out.println(rowIndexMax + 1 + " row max");
-  System.out.println(colIndexMin + 1 + " col min");
-  System.out.println(rowIndexMin + 1 + " row min");
+  //System.out.println(colIndexMax + 1 + " col max");
+  //System.out.println(rowIndexMax + 1 + " row max");
+  //System.out.println(colIndexMin + 1 + " col min");
+  //System.out.println(rowIndexMin + 1 + " row min");
   
 }
 
@@ -39,7 +39,6 @@ void keyPressed() {
   if (keyCode == UP) {
     flying -= 0.10; // how fast the camera is moving along y-axis
   }
-  
 }
 
 void draw () {
@@ -52,22 +51,22 @@ void draw () {
     float xoff = 0; // how fast the camera is moving along x-axis
     for (int x = 0; x < cols; x++) {
       terrain[x][y] = map(noise(xoff,yoff), 0, 1, zmin, zmax);
-      xoff += 0.2;
+      xoff += 0.05;
     }
-    yoff += 0.2;
+    yoff += 0.05;
   }
   
   background(0, 0, 100);
   stroke(0, 0, 0);
   
   translate(width/2, height/2);
-  rotateX(PI/3);
+  rotateX((PI)/3); // angles the pov to a view side angle
   translate(-w/2, -h/2);
   
   colorMode(HSB, 360, 100, 100);
        float h;
        float s = 100;
-       float b = 100;
+       float b;
   
   for (int y = 0; y < rows - 1; y++) {
     
@@ -76,15 +75,28 @@ void draw () {
     for (int x = 0; x < cols; x++) {
       
        z = terrain[x][y];
-       System.out.println(z);
+       //System.out.println(z);
        z1 = terrain[x][y+1];
+       
        vertex(x*scl, y*scl, z);
        vertex(x*scl, (y+1)*scl, z1);
        
+       if ((z1 - z) <= 0.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 100;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) > 0.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 75;
+         fill(h, s, b);
+       }
+       
+       
        //h = ((1 - colorScale) * 360) - 90;
-       h = ((1 - terrain[x][y]/100) * 360) - 90;
        //h = (1 - terrain[x][y]/360) * 360;
-       fill(h, s, b);
+       
+       
        
     } // end of inner for loop
     
