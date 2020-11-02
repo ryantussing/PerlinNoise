@@ -1,6 +1,6 @@
 int cols, rows;
 int scl = 10;
-int w = 1200; 
+int w = 1800; 
 int h = 900;
 static float z;
 static float z1;
@@ -15,7 +15,7 @@ static int zmax = 100;
 float[][] terrain;
 
 void setup() {
-  size(1500, 1500, P3D);
+  size(600, 600, P3D);
   cols = w / scl;
   rows = h / scl;
   terrain = new float[cols][rows];
@@ -56,12 +56,13 @@ void draw () {
     yoff += 0.05;
   }
   
-  background(0, 0, 100);
-  stroke(0, 0, 0);
+  background(240, 100, 20);
+  //stroke(0, 0, 0);
+  noStroke();
   
-  translate(width/2, height/2);
+  translate(width/1, height/1); // brings the picture down into vision from the top of the screen (puts pov on top of the terrain)
   rotateX((PI)/3); // angles the pov to a view side angle
-  translate(-w/2, -h/2);
+  translate(-w/2, -h/2); // moves the terrain to the left so that it takes up the whole screen from left to right
   
   colorMode(HSB, 360, 100, 100);
        float h;
@@ -81,17 +82,46 @@ void draw () {
        vertex(x*scl, y*scl, z);
        vertex(x*scl, (y+1)*scl, z1);
        
-       if ((z1 - z) <= 0.0) {
+       if ((z1 - z) <= -3.0) {
          h = ((1 - terrain[x][y]/100) * 360) - 90;
          b = 100;
          fill(h, s, b);
        }
-       else if ((z1 - z) > 0.0) {
+       else if ((z1 - z) <= -2.0 && (z1 - z) > -3.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 95;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) <= -1.0 && (z1 - z) > -2.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 90;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) <= 0.0 && (z1 - z) > -1.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 85;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) > 0.0 && (z1 - z) <= 1.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 80;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) > 1.0 && (z1 - z) <= 2.0) {
          h = ((1 - terrain[x][y]/100) * 360) - 90;
          b = 75;
          fill(h, s, b);
        }
-       
+       else if ((z1 - z) > 2.0 && (z1 - z) <= 3.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 70;
+         fill(h, s, b);
+       }
+       else if ((z1 - z) > 3.0) {
+         h = ((1 - terrain[x][y]/100) * 360) - 90;
+         b = 65;
+         fill(h, s, b);
+       }
        
        //h = ((1 - colorScale) * 360) - 90;
        //h = (1 - terrain[x][y]/360) * 360;
